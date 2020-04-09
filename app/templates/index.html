@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block navbar %}{% include "navbar.html" %}{% endblock %}
+
+
+{% block content %}
+<div class="container mt-3">
+   {% for note in data %}
+   <p>{{note}}</p>
+   {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block modal %}{% endblock %}

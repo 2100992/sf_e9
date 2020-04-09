@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block navbar %}{% include "navbar.html" %}{% endblock %}
+
+
+{% block content %}
+
+<div class="container mt-3">
+
+   
+   <div class="formwrapper container col-md-6">
+      <h2 class="title">Forecast</h2>
+      <form method="POST" action="/forecast">
+         {{ form.csrf_token }}
+
+         <div class="form-field">
+            {{ form.city.label(class='control-label') }} {{ form.city(class='form-control') }}
+         </div>
+
+         <div class="form-field">
+            {{ form.date.label(class='control-label') }} {{ form.date(class='form-control') }}
+         </div>
+
+         <div class="form-field">
+            {{ form.temperature.label(class='control-label') }} {{ form.temperature(class='form-control') }}
+         </div>
+
+         <!-- {% for field in form %}
+            <div class="form-group">
+               {{ field.label(class='control-label') }}
+               {{ field(class='form-control') }}
+            </div>
+         {% endfor %} -->
+
+         <!-- <input class="btn btn-info" type="submit" value="Go"> -->
+         {{ form.submit(class="btn btn-info mt-3") }}
+      </form>
+   </div>
+</div>
+
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block modal %}{% endblock %}

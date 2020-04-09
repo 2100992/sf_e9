@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block navbar %}{% include "navbar.html" %}{% endblock %}
+
+
+{% block content %}
+
+{% if error %}
+<p><strong> Error: </strong></p> {{error}}
+{% endif %}
+
+
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block modal %}{% endblock %}
