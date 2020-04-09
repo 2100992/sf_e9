@@ -4,8 +4,13 @@ from distutils.util import strtobool
 # export DATABASE_URL= \
 #     postgresql://postgres:docker@localhost:5432/weather_forecast_dev
 
+DB_HOST = os.getenv('DB_HOST', 'localhost')
+DB_PORT = os.getenv('DB_HOST', '5432')
+DB_NAME = 'weather_forecast_dev'
+
+
 DATABASE_URL = \
-    'postgresql://postgres:docker@192.168.1.151:5432/weather_forecast_dev'
+    f'postgresql://postgres:docker@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
 
 HOST = str(os.environ.get('HOST', 'localhost'))
