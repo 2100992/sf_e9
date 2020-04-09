@@ -141,3 +141,7 @@ def create_user():
         db.session.commit()
         return redirect("/")
     return render_template("login.html", form=form)
+
+@app.user('/user', methods=['GET'])
+def user():
+    pass
