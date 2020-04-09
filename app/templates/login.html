@@ -7,16 +7,15 @@
 
 <div class="container mt-3">
 
-   
    <div class="formwrapper container col-md-6">
       <h2 class="title">Forecast</h2>
-      <form method="POST" action="/forecast">
+      <form method="POST" action="">
          {{ form.csrf_token }}
-         {% for field in form %}
-            <div class="form-group">
-               {{ field.label(class='control-label') }}
-               {{ field(class='form-control') }}
-            </div>
+         {% for field in form if field.name not in ['csrf_token', 'submit'] %}
+         <div class="form-group">
+            {{ field.label(class='control-label') }}
+            {{ field(class='form-control') }}
+         </div>
          {% endfor %}
 
          <!-- <input class="btn btn-info" type="submit" value="Go"> -->

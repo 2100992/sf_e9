@@ -1,13 +1,20 @@
-from app import app, db, bcrypt, login_manager
+from app import app, db
+# from app import bcrypt
+from app import login_manager
 
-from flask import render_template, jsonify, make_response, request, redirect, url_for
+from flask import request
+from flask import render_template
+from flask import jsonify
+from flask import make_response
+from flask import redirect, url_for
+from flask import flash
 
 from datetime import datetime
 
 from app.models import Forecast, User
 from app.extra import get_weather_for_date, Week
 from app.forms import ForecastForm, LoginForm, CreateUserForm
-from flask_login import login_user
+from flask_login import login_user, login_required, logout_user
 
 
 @login_manager.user_loader
@@ -22,8 +29,11 @@ def page_not_found(e):
 
 
 @app.route('/')
+@login_required
 def index():
-    data = set('asdfgasdfg')
+    data = {}
+    data['text'] = 'new text'
+    # data['user'] = request.user.email
     return render_template('index.html', data=data)
 
 
@@ -53,10 +63,6 @@ def weather_week(city):
 def forecast():
     forecast_form = ForecastForm()
     if request.method == 'POST':
-        print(forecast_form.validate())
-        print(forecast_form.city.data)
-        print(forecast_form.date.data)
-        print(forecast_form.temperature.data)
 
         if forecast_form.validate_on_submit():
 
@@ -79,7 +85,7 @@ def forecast():
 
             return redirect(url_for('index'))
 
-        error = 'Form was not validated'
+        error = 'Form was not validated!!!'
         return render_template('error.html', form=forecast_form, error=error)
 
     return render_template('add_forecast.html', form=forecast_form)
@@ -119,29 +125,39 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.get(form.email.data)
-        if user:
-            if bcrypt.check_password_hash(user.password, form.password.data):
-                user.authenticated = True
-                # db.session.add(user)
-                # db.session.commit()
-                login_user(user, remember=True)
-                return redirect(url_for('index'))
+        print(user)
+        if user.check_password(form.password.data):
+            user.authenticated = True
+            # db.session.add(user)
+            # db.session.commit()
+            login_user(user, remember=True)
+            return redirect(url_for('index'))
     return render_template('login.html', form=form)
 
 
 @app.route("/create_user", methods=["GET", "POST"])
 def create_user():
     form = CreateUserForm()
+    flash('You were successfully logged in')
     if form.validate_on_submit():
         email = request.form.get('email')
         password = request.form.get('password')
-        user = User(
-            email=email, password=bcrypt.generate_password_hash(password))
+        user = User(email)
+        user.set_password(password)
         db.session.add(user)
         db.session.commit()
         return redirect("/")
     return render_template("login.html", form=form)
 
-@app.user('/user', methods=['GET'])
+
+@app.route('/user', methods=['GET'])
 def user():
-    pass
+    return redirect('/')
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out.")
+    return redirect(url_for('login'))

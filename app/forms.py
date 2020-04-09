@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.fields.html5 import DateField, EmailField
-from wtforms.validators import DataRequired, Email, InputRequired
+from wtforms.validators import DataRequired, Email, InputRequired, EqualTo
 
 
 class ForecastForm(FlaskForm):
@@ -31,12 +31,42 @@ class ForecastForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = EmailField('email', validators=[DataRequired(), Email()])
-    password = PasswordField('password', validators=[DataRequired()])
+    email = EmailField(
+        'email',
+        validators=[
+            InputRequired("Please enter email."),
+            DataRequired(),
+            Email()
+        ]
+    )
+    password = PasswordField(
+        'password',
+        validators=[
+            DataRequired()
+        ]
+    )
     submit = SubmitField('Войти')
 
+
 class CreateUserForm(FlaskForm):
-    email = EmailField('Введите email', validators=[DataRequired(), Email()])
-    password = PasswordField('Введите пароль', validators=[DataRequired()])
-    password_conf = PasswordField('Повторите пароль', validators=[DataRequired()])
+    email = EmailField(
+        'Введите email',
+        validators=[
+            DataRequired(),
+            Email()
+        ]
+    )
+    password = PasswordField(
+        'Введите пароль',
+        validators=[
+            DataRequired()
+        ]
+    )
+    password_conf = PasswordField(
+        'Повторите пароль',
+        validators=[
+            DataRequired(),
+            EqualTo('password', message='Разные пароли')
+        ]
+    )
     submit = SubmitField('Создать')
