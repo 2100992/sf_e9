@@ -6,7 +6,7 @@ from distutils.util import strtobool
 
 DB_HOST = os.getenv('DB_HOST', 'localhost')
 DB_PORT = os.getenv('DB_HOST', '5432')
-DB_NAME = 'weather_forecast_dev'
+DB_NAME = 'sf_e9_flask_events'
 
 
 DATABASE_URL = \
