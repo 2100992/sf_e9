@@ -3,7 +3,7 @@ from app import app, db
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Shell
 
-from app.models import Forecast, User
+from app.models import User, Event
 
 
 migrate = Migrate(app, db)
