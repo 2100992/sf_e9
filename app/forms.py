@@ -1,38 +1,42 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.fields.html5 import DateField, EmailField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
+from wtforms.fields.html5 import EmailField, DateTimeField
 from wtforms.validators import DataRequired, Email, InputRequired, EqualTo
 
 
-class ForecastForm(FlaskForm):
-    city = StringField(
-        'city',
+class CreateEventForm(FlaskForm):
+    title = StringField(
+        'Название',
         validators=[
-            InputRequired("Please enter your city."),
+            InputRequired(),
             DataRequired()
         ]
     )
-    date = DateField(
-        'date',
-        format='%Y-%m-%d',
+    text = TextAreaField(
+        'Описание события'
+    )
+
+    start_time = DateTimeField(
+        'Время начала события',
+        format='%Y-%m-%d %H:%M:%S',
         validators=[
-            InputRequired("Please enter date."),
+            InputRequired(),
             DataRequired()
         ]
     )
-    temperature = StringField(
-        'temperature',
+    end_time = DateTimeField(
+        'Время окончания события',
+        format='%Y-%m-%d %H:%M:%S',
         validators=[
-            InputRequired("Please enter temperature."),
+            InputRequired(),
             DataRequired()
         ]
     )
-    submit = SubmitField('Добавить')
 
 
 class LoginForm(FlaskForm):
     email = EmailField(
-        'email',
+        'Укажите email',
         validators=[
             InputRequired("Please enter email."),
             DataRequired(),
@@ -40,8 +44,9 @@ class LoginForm(FlaskForm):
         ]
     )
     password = PasswordField(
-        'password',
+        'Введите пароль',
         validators=[
+            InputRequired("Please enter password."),
             DataRequired()
         ]
     )
@@ -52,6 +57,7 @@ class CreateUserForm(FlaskForm):
     email = EmailField(
         'Введите email',
         validators=[
+            InputRequired("Please enter email."),
             DataRequired(),
             Email()
         ]
@@ -59,14 +65,54 @@ class CreateUserForm(FlaskForm):
     password = PasswordField(
         'Введите пароль',
         validators=[
+            InputRequired("Please enter password."),
             DataRequired()
         ]
     )
     password_conf = PasswordField(
         'Повторите пароль',
         validators=[
+            InputRequired("Please confirm password."),
             DataRequired(),
-            EqualTo('password', message='Разные пароли')
+            EqualTo('password', message='Different passwords')
         ]
     )
     submit = SubmitField('Создать')
+
+
+class ChangeUserForm(FlaskForm):
+    username = StringField(
+        'Имя пользователя',
+        validators=[
+            InputRequired(),
+            DataRequired()
+        ]
+    )
+    email = EmailField(
+        'Укажите email',
+        validators=[
+            DataRequired(),
+            Email()
+        ]
+    )
+    # password = PasswordField(
+    #     'Введите пароль',
+    #     validators=[
+    #         DataRequired()
+    #     ]
+    # )
+    # password_conf = PasswordField(
+    #     'Повторите пароль',
+    #     validators=[
+    #         DataRequired(),
+    #         EqualTo('password', message='Different passwords')
+    #     ]
+    # )
+    # authenticated = BooleanField(
+    #     'Авторизованный пользователь',
+    #     validators=[
+    #         # DataRequired()
+    #     ]
+    # )
+
+    submit = SubmitField('Внести изменения')
