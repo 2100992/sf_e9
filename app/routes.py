@@ -1,20 +1,18 @@
 from app import app, db
-# from app import bcrypt
+
 from app import login_manager
 
 from flask import request
 from flask import render_template
-# from flask import jsonify
-# from flask import make_response
 from flask import redirect, url_for
 from flask import flash
 
-from datetime import datetime
+from dateutil.parser import parse
 
 from app.models import User, Event
-# from app.extra import get_weather_for_date, Week
+
 from app.forms import LoginForm, CreateUserForm
-from app.forms import CreateEventForm, ChangeUserForm
+from app.forms import EventForm, EditUserForm
 from flask_login import login_user, login_required, logout_user, current_user
 
 
@@ -30,91 +28,85 @@ def page_not_found(e):
 
 
 @app.route('/')
-# @login_required
 def index():
-    data = {}
-    data['text'] = 'new text'
-    # data['user'] = request.user.email
-    return render_template('index.html', data=data)
+    return render_template('index.html')
 
 
-@app.route('/hello')
-def hello():
-    return 'Hi, fellow Flask developer'
+@app.route('/events')
+@login_required
+def events():
+    events = Event.query.order_by(Event.start_time).all()
+    return render_template('events.html', events=events)
 
 
-
-# @app.route('/week/<city>')
-# def weather_week(city):
-#     week = Week(datetime.today())
-#     week_weather = {day: get_weather_for_date(day) for day in week.week_days}
-#     return render_template(
-#         'week_overview.html',
-#         week=week,
-#         city=city,
-#         week_weather=week_weather
-#     )
+@app.route('/events/my')
+@login_required
+def my_events():
+    events = Event.query.filter_by(
+        author=current_user._id).order_by(Event.start_time)
+    return render_template('events.html', events=events)
 
 
-# @app.route('/forecast', methods=['POST', 'GET'])
-# def forecast():
-#     forecast_form = ForecastForm()
-#     if request.method == 'POST':
+@app.route('/events/create/', methods=['GET', 'POST'])
+@login_required
+def event_create():
+    form = EventForm()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            event = Event()
+            event.author = current_user._id
+            event.title = form.title.data
+            event.text = form.text.data
+            event.start_time = parse(form.start_time.data)
+            event.end_time = parse(form.end_time.data)
+            if event.end_time < event.start_time:
+                event.end_time = event.start_time
 
-#         if forecast_form.validate_on_submit():
-
-#             city = forecast_form.city.data
-#             date = forecast_form.date.data
-#             temperature = forecast_form.temperature.data
-
-#             # date_format = datetime.strptime(date, '%Y-%m-%d')
-
-#             forecast = Forecast(
-#                 city=city,
-#                 # date=date_format.date(),
-#                 date=date,
-#                 # temperature=get_weather_for_date(date_format)
-#                 temperature=temperature
-#             )
-
-#             db.session.add(forecast)
-#             db.session.commit()
-
-#             return redirect(url_for('index'))
-
-#         error = 'Form was not validated!!!'
-#         return render_template('error.html', form=forecast_form, error=error)
-
-#     return render_template('add_forecast.html', form=forecast_form)
+            db.session.add(event)
+            db.session.commit()
+            return redirect(url_for('my_events'))
+    return render_template('event_create.html', form=form)
 
 
-# @app.route('/forecast/<_id>', methods=['GET', 'PATCH'])
-# def forecast_for_id(_id):
-#     if request.method == 'PATCH':
-#         temperature = request.args.get('temperature')
+@app.route('/events/edit/<int:_id>', methods=['GET', 'POST'])
+@login_required
+def event_edit(_id):
+    event = Event.query.filter_by(_id=_id).first()
+    form = EventForm()
+    if current_user.email == event.user.email:
+        if request.method == "POST":
+            if event.title:
+                event.title = form.title.data
+            event.text = form.text.data
+            event.start_time = parse(form.start_time.data)
+            event.end_time = parse(form.end_time.data)
+            if event.end_time < event.start_time:
+                event.end_time = event.start_time
 
-#         forecast = Forecast.query.get_or_404(_id)
-#         forecast.temperature = temperature
-#         db.session.commit()
+            db.session.add(event)
+            db.session.commit()
+            return redirect(f'/events/{_id}')
 
-#         return jsonify({'id': forecast._id}), 200
+        if event:
+            form.title.data = event.title
+            form.text.data = event.text
+            if event.start_time:
+                form.start_time.data = event.start_time.strftime(
+                    '%Y-%m-%d %H:%M:%S')
+            if event.end_time:
+                form.end_time.data = event.end_time.strftime(
+                    '%Y-%m-%d %H:%M:%S')
+            return render_template('event_edit.html', form=form)
 
-#     elif request.method == 'GET':
-#         forecast = Forecast.query.get_or_404(_id)
-#         return jsonify({
-#             'id': forecast._id,
-#             'city': forecast.city,
-#             'temperature': forecast.temperature,
-#             'date': forecast.date
-#         })
+    return redirect(url_for('events'))
 
 
-# @app.route('/forecast/<_id>', methods=['DELETE'])
-# def delete_forecast(_id):
-#     forecast = Forecast.query.get_or_404(_id)
-#     db.session.delete(forecast)
-#     db.commit()
-#     return jsonify({'result': True})
+@app.route('/events/<int:_id>')
+@login_required
+def event(_id):
+    event = Event.query.filter_by(_id=_id).first()
+    event._text = event.text.split('\n')
+    return render_template('event.html', event=event)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -125,9 +117,6 @@ def login():
             user = User.query.filter_by(email=form.email.data).first()
             print(user)
             if user.check_password(form.password.data):
-                # user.authenticated = True
-                # db.session.add(user)
-                # db.session.commit()
                 login_user(user, remember=True)
                 return redirect(url_for('index'))
     title = 'Войти'
@@ -151,28 +140,27 @@ def create_user():
 
 
 @app.route('/user', methods=['GET', 'POST'])
-# @login_required
 def user():
-    form = ChangeUserForm()
-    if request.method == 'POST':
-        print('POST')
-        if form.validate_on_submit():
-            user = User.query.filter_by(_id=current_user._id).first()
-            if form.email.data:
-                user.email = form.email.data
-            if form.username.data:
-                user.username = form.username.data
-            # if form.password.data:
-            #     user.set_password(form.password.data)
-            db.session.commit()
-            login_user(user, remember=True)
-        return redirect(url_for('user'))
-
+    form = EditUserForm()
     if current_user.is_authenticated:
+
+        if request.method == 'POST':
+            print('POST')
+            if form.validate_on_submit():
+                user = User.query.filter_by(_id=current_user._id).first()
+                if form.email.data:
+                    user.email = form.email.data
+                if form.username.data:
+                    user.username = form.username.data
+                db.session.commit()
+                login_user(user, remember=True)
+            return redirect(url_for('user'))
+
         form.email.data = current_user.email
         form.username.data = current_user.username
         return render_template('user.html', form=form)
     return redirect(url_for('login'))
+
 
 @app.route('/logout')
 @login_required

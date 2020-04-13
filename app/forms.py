@@ -1,10 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
-from wtforms.fields.html5 import EmailField, DateTimeField
-from wtforms.validators import DataRequired, Email, InputRequired, EqualTo
+
+from wtforms import StringField, PasswordField
+from wtforms import SubmitField, TextAreaField
+
+from wtforms.fields.html5 import EmailField
+
+from wtforms.validators import DataRequired, Email
+from wtforms.validators import InputRequired, EqualTo
 
 
-class CreateEventForm(FlaskForm):
+class EventForm(FlaskForm):
     title = StringField(
         'Название',
         validators=[
@@ -16,22 +21,21 @@ class CreateEventForm(FlaskForm):
         'Описание события'
     )
 
-    start_time = DateTimeField(
-        'Время начала события',
-        format='%Y-%m-%d %H:%M:%S',
+    start_time = StringField(
+        'Время начала события в формате',
         validators=[
-            InputRequired(),
-            DataRequired()
+            # InputRequired(),
+            # DataRequired()
         ]
     )
-    end_time = DateTimeField(
-        'Время окончания события',
-        format='%Y-%m-%d %H:%M:%S',
+    end_time = StringField(
+        'Время окончания события в формате',
         validators=[
-            InputRequired(),
-            DataRequired()
+            # InputRequired(),
+            # DataRequired()
         ]
     )
+    submit = SubmitField('Добавить')
 
 
 class LoginForm(FlaskForm):
@@ -80,7 +84,7 @@ class CreateUserForm(FlaskForm):
     submit = SubmitField('Создать')
 
 
-class ChangeUserForm(FlaskForm):
+class EditUserForm(FlaskForm):
     username = StringField(
         'Имя пользователя',
         validators=[
@@ -95,24 +99,5 @@ class ChangeUserForm(FlaskForm):
             Email()
         ]
     )
-    # password = PasswordField(
-    #     'Введите пароль',
-    #     validators=[
-    #         DataRequired()
-    #     ]
-    # )
-    # password_conf = PasswordField(
-    #     'Повторите пароль',
-    #     validators=[
-    #         DataRequired(),
-    #         EqualTo('password', message='Different passwords')
-    #     ]
-    # )
-    # authenticated = BooleanField(
-    #     'Авторизованный пользователь',
-    #     validators=[
-    #         # DataRequired()
-    #     ]
-    # )
 
     submit = SubmitField('Внести изменения')

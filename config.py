@@ -1,9 +1,6 @@
 import os
 from distutils.util import strtobool
 
-# export DATABASE_URL= \
-#     postgresql://postgres:docker@localhost:5432/weather_forecast_dev
-
 DB_HOST = os.getenv('DB_HOST', 'localhost')
 DB_PORT = os.getenv('DB_HOST', '5432')
 DB_NAME = 'sf_e9_flask_events'

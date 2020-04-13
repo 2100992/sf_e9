@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block navbar %}{% include "navbar.html" %}{% endblock %}
+
+
+{% block content %}
+
+<div class="container mt-3 mb-5">
+    <div class="card">
+        <div class="card-header">
+            {{ event.title }}
+        </div>
+        <div class="card-body">
+            <p>
+                {% for line in event._text %}
+                <pre style="margin-bottom: 0.3rem;">{{ line }}</pre>
+                {% endfor %}
+            </p>
+
+            <div class="row">
+                <div class="col-sm-8">
+                    <p>
+                        {% if event.start_time %}
+                        {{ event.start_time }}<br>
+                        {% endif %}
+                        {% if event.end_time %}
+                        {{ event.end_time }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-sm-4">
+                    {% if current_user.email == event.user.email %}
+                    <a href="/events/edit/{{ event._id }}" class="btn btn-primary">Редактировать</a>
+                    {% endif %}
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block modal %}{% endblock %}

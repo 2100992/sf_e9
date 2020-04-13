@@ -21,6 +21,20 @@ class Event(db.Model):
             if self.end_time < self.start_time:
                 self.end_time = self.start_time
 
+    @property
+    def short_text(self) -> str:
+        if len(self.text) > 40:
+            short_text = self.text[:37] + "..."
+        else:
+            short_text = self.text
+        return short_text
+
+    def __repr__(self) -> str:
+        result = ''
+        result += f'title={self.title}\n'
+        result += f'short_text={self.short_text}\n'
+        return result
+
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -33,7 +47,7 @@ class User(db.Model, UserMixin):
     updated_on = db.Column(
         db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # event_id = db.relationship('Event', backref='user', lazy=True)
+    event_id = db.relationship('Event', backref='user', lazy=True)
 
     def __init__(self, email: str):
         self.email = email
