@@ -57,8 +57,13 @@ def event_create():
             event.author = current_user._id
             event.title = form.title.data
             event.text = form.text.data
-            event.start_time = parse(form.start_time.data)
-            event.end_time = parse(form.end_time.data)
+
+            try:
+                event.start_time = parse(form.start_time.data)
+
+            try:
+                event.end_time = parse(form.end_time.data)
+
             if event.end_time < event.start_time:
                 event.end_time = event.start_time
 
@@ -78,8 +83,13 @@ def event_edit(_id):
             if event.title:
                 event.title = form.title.data
             event.text = form.text.data
-            event.start_time = parse(form.start_time.data)
-            event.end_time = parse(form.end_time.data)
+
+            try:
+                event.start_time = parse(form.start_time.data)
+
+            try:
+                event.end_time = parse(form.end_time.data)
+
             if event.end_time < event.start_time:
                 event.end_time = event.start_time
 
