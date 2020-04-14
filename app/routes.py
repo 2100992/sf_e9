@@ -60,12 +60,17 @@ def event_create():
 
             try:
                 event.start_time = parse(form.start_time.data)
+            except Exception:
+                pass
 
             try:
                 event.end_time = parse(form.end_time.data)
+            except Exception:
+                pass
 
-            if event.end_time < event.start_time:
-                event.end_time = event.start_time
+            if event.end_time and event.start_time:
+                if event.end_time < event.start_time:
+                    event.end_time = event.start_time
 
             db.session.add(event)
             db.session.commit()
@@ -86,12 +91,17 @@ def event_edit(_id):
 
             try:
                 event.start_time = parse(form.start_time.data)
+            except Exception:
+                pass
 
             try:
                 event.end_time = parse(form.end_time.data)
+            except Exception:
+                pass
 
-            if event.end_time < event.start_time:
-                event.end_time = event.start_time
+            if event.end_time and event.start_time:
+                if event.end_time < event.start_time:
+                    event.end_time = event.start_time
 
             db.session.add(event)
             db.session.commit()
