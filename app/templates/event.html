@@ -11,11 +11,18 @@
             {{ event.title }}
         </div>
         <div class="card-body">
-            <p>
-                {% for line in event._text %}
-                <pre style="margin-bottom: 0.3rem;">{{ line }}</pre>
-                {% endfor %}
-            </p>
+
+            <pre>
+                {{ event.text }}
+            </pre>
+
+            <!-- <p>
+            {% for line in event._text %}
+                <pre style="margin-bottom: 0.3rem;">
+                    {{ line }}
+                </pre>
+            {% endfor %}
+            </p> -->
 
             <div class="row">
                 <div class="col-sm-8">
