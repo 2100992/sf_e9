@@ -25,10 +25,11 @@ https://sf-e9.herokuapp.com/
 Во вкладке 'Deploy' выбираем 'Deployment method' - 'GitHub' и выбираем соотвествующий репозиторий.  
 Жмем 'Deploy Branch' - 'master'  
 Во вкладке 'Settings' жмем кнопку 'Reveal Config Vars' и добавляем следующие переменные окружения:  
-    - DATABASE_URL - Уже должна автоматом проставиться системой. Что-то типа `postgres://usersdfs:passdfasdf@hostsdaf.eu-west-1.compute.amazonaws.com:5432/databasesfasdfga`. Если нет, лезем в https://data.heroku.com и разбираемся  
-    - DEBUG - False  
-    - SECRET_KEY - Случайная комбинация (20 символов наверное хватит)  
-    - SERVER_NAME - ссылка на приложение. В моем случае = sf-e9.herokuapp.com  
+
+- DATABASE_URL - Уже должна автоматом проставиться системой. Что-то типа `postgres://usersdfs:passdfasdf@hostsdaf.eu-west-1.compute.amazonaws.com:5432/databasesfasdfga`. Если нет, лезем в https://data.heroku.com и разбираемся  
+- DEBUG - False  
+- SECRET_KEY - Случайная комбинация (20 символов наверное хватит)  
+- SERVER_NAME - ссылка на приложение. В моем случае = sf-e9.herokuapp.com  
 
 Должно заработать.  
 
